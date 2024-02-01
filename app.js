@@ -3,11 +3,22 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const mongoose = require('mongoose');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 const app = express();
+
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log('Successfully connected to database');
+  })
+  .catch((err) => {
+    console.log('Could not connect to database. Exiting now...', err);
+    process.exit(); // terminate the application
+  });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
