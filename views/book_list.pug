@@ -1,0 +1,19 @@
+extends layout
+
+block content
+	h1= title
+	if book_list.length
+		ol
+			each book in book_list
+				li
+					a(href=book.url) #{book.title}
+					| (#{book.author.name})
+	else
+		p There are no books.
+
+	p abc
+		|  The pipe always goes <b>at the beginning of its own line</b>,
+		| not counting indentation.
+		em 123
+		| 456
+		| 789
