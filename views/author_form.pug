@@ -12,7 +12,7 @@ block content
 					placeholder='First name (Christian)' 
 					name='first_name' 
 					required 
-					value=(undefined===author ? '' : author.first_name) 
+					value!=(undefined===author ? '' : author.first_name) 
 				)
 			.col-sm-6
 				label(for='family_name') Family Name:
@@ -21,7 +21,7 @@ block content
 					placeholder='Family name (Surname)' 
 					name='family_name' 
 					required 
-					value=(undefined===author ? '' : author.family_name)
+					value!=(undefined===author ? '' : author.family_name)
 				)
 		div.form-group.row
 			.col-sm-6
@@ -30,7 +30,7 @@ block content
 					type='date'
 					placeholder='dd/mm/yyyy'
 					name='date_of_birth' 
-					value=(undefined===author ? '' : author.date_of_birth) 
+					value!=(undefined===author ? '' : author.date_of_birth) 
 				)
 			.col-sm-6
 				label(for='date_of_death') Date of death:
@@ -38,7 +38,7 @@ block content
 					type='date'
 					placeholder='dd/mm/yyyy'
 					name='date_of_death' 
-					value=(undefined===author ? '' : author.date_of_birth) 
+					value!=(undefined===author ? '' : author.date_of_birth) 
 				)
 		button.btn.btn-primary(type='submit') Submit
 

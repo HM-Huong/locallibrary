@@ -1,31 +1,47 @@
+require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const mongoose = require('mongoose');
-
+const morgan = require('morgan');
+const debug = require('debug')('app');
+const compression = require('compression');
+const helmet = require('helmet');
+const RateLimit = require('express-rate-limit');
+console.log(process.env.MONGODB_URI);
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const catalogRouter = require('./routes/catalog');
+const db = require('./database/mongo.db');
+
+debug('LocalLibrary app starting');
 
 const app = express();
-
-mongoose
-	.connect(process.env.MONGODB_URI)
-	.then(() => {
-		console.log('Successfully connected to database');
-	})
-	.catch((err) => {
-		console.log('Could not connect to database. Exiting now...', err);
-		process.exit(); // terminate the application
-	});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+db.connect();
+
+// Set up rate limiter: maximum of twenty requests per minute
+const limiter = RateLimit({
+	windowMs: 1 * 60 * 1000, // 1 minute
+	max: 20,
+});
+// Apply rate limiter to all requests
+app.use(limiter);
+
+app.use(compression()); // Compress all routes
+// Set CSP headers to allow our Bootstrap and Jquery to be served
+app.use(
+	helmet.contentSecurityPolicy({
+		directives: {
+			'script-src': ["'self'", 'code.jquery.com', 'cdn.jsdelivr.net'],
+		},
+	})
+);
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
